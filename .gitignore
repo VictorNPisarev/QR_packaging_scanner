@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Логи
+*.log
+
+# Конфиденциальные данные
+.env
+
+# Видео/изображения для тестов
+test_data/
