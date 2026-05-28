@@ -65,7 +65,7 @@
  [],
  False,
  False,
- 1779803576,
+ 1779967030,
  [('run.exe',
    'C:\\DEVelop\\QR_packaging_scanner\\venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],

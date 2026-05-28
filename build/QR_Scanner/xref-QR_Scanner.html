@@ -187,6 +187,7 @@ imports:
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
+ &#8226;   <a href="#zxingcpp">zxingcpp</a>
 
   </div>
 
@@ -286,6 +287,19 @@ imported by:
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
     <a href="#numpy.f2py.diagnose">numpy.f2py.diagnose</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="'scanner.models'"></a>
+  <a target="code" href="" type="text/plain"><tt>'scanner.models'</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#src.scanner.detector">src.scanner.detector</a>
+ &#8226;   <a href="#src.scanner.models.cell_position">src.scanner.models.cell_position</a>
+ &#8226;   <a href="#src.ui.config_panel">src.ui.config_panel</a>
 
   </div>
 
@@ -3506,9 +3520,13 @@ imports:
   <div class="import">
 imported by:
     <a href="#pprint">pprint</a>
- &#8226;   <a href="#src.camera.capture">src.camera.capture</a>
  &#8226;   <a href="#src.messaging.events">src.messaging.events</a>
- &#8226;   <a href="#src.scanner.detector">src.scanner.detector</a>
+ &#8226;   <a href="#src.scanner.models.barcode_detection">src.scanner.models.barcode_detection</a>
+ &#8226;   <a href="#src.scanner.models.camera_config">src.scanner.models.camera_config</a>
+ &#8226;   <a href="#src.scanner.models.cell_position">src.scanner.models.cell_position</a>
+ &#8226;   <a href="#src.scanner.models.layer_calibration">src.scanner.models.layer_calibration</a>
+ &#8226;   <a href="#src.scanner.models.packaging_config">src.scanner.models.packaging_config</a>
+ &#8226;   <a href="#src.scanner.models.scan_stats">src.scanner.models.scan_stats</a>
  &#8226;   <a href="#src.services.deduplication">src.services.deduplication</a>
  &#8226;   <a href="#src.ui.config_panel">src.ui.config_panel</a>
  &#8226;   <a href="#src.ui.stats_panel">src.ui.stats_panel</a>
@@ -6655,6 +6673,7 @@ imported by:
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#signal">signal</a>
  &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#src.scanner.models.cell_shape">src.scanner.models.cell_shape</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#uuid">uuid</a>
 
@@ -15882,6 +15901,8 @@ imported by:
     <a href="#numpy">numpy</a>
  &#8226;   <a href="#numpy.random._mt19937">numpy.random._mt19937</a>
  &#8226;   <a href="#numpy.random._philox">numpy.random._philox</a>
+ &#8226;   <a href="#src.camera.capture">src.camera.capture</a>
+ &#8226;   <a href="#src.scanner.detector">src.scanner.detector</a>
  &#8226;   <a href="#src.ui.overlay">src.ui.overlay</a>
  &#8226;   <a href="#src.ui.stats_panel">src.ui.stats_panel</a>
 
@@ -17654,6 +17675,17 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="scanner"></a>
+  <a target="code" href="" type="text/plain"><tt>scanner</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#src.camera.capture">src.camera.capture</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="secrets"></a>
   <a target="code" href="///C:/Users/%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC/AppData/Local/Programs/Python/Python312/Lib/secrets.py" type="text/plain"><tt>secrets</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -17917,9 +17949,10 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#cv2">cv2</a>
- &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#numpy">numpy</a>
+ &#8226;   <a href="#numpy.typing">numpy.typing</a>
+ &#8226;   <a href="#scanner">scanner</a>
  &#8226;   <a href="#src.camera">src.camera</a>
 
   </div>
@@ -18002,6 +18035,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#src.scanner.detector">src.scanner.detector</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
 
   </div>
 
@@ -18012,17 +18046,177 @@ imported by:
   <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/detector.py" type="text/plain"><tt>src.scanner.detector</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#cv2">cv2</a>
- &#8226;   <a href="#dataclasses">dataclasses</a>
+    <a href="#'scanner.models'">'scanner.models'</a>
+ &#8226;   <a href="#cv2">cv2</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#numpy">numpy</a>
+ &#8226;   <a href="#numpy.typing">numpy.typing</a>
  &#8226;   <a href="#src.scanner">src.scanner</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+ &#8226;   <a href="#zxingcpp">zxingcpp</a>
 
   </div>
   <div class="import">
 imported by:
     <a href="#src.services.scan_service">src.services.scan_service</a>
  &#8226;   <a href="#src.ui.overlay">src.ui.overlay</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/__init__.py" type="text/plain"><tt>src.scanner.models</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#src.scanner">src.scanner</a>
+ &#8226;   <a href="#src.scanner.models.barcode_detection">src.scanner.models.barcode_detection</a>
+ &#8226;   <a href="#src.scanner.models.camera_config">src.scanner.models.camera_config</a>
+ &#8226;   <a href="#src.scanner.models.cell_position">src.scanner.models.cell_position</a>
+ &#8226;   <a href="#src.scanner.models.cell_shape">src.scanner.models.cell_shape</a>
+ &#8226;   <a href="#src.scanner.models.layer_calibration">src.scanner.models.layer_calibration</a>
+ &#8226;   <a href="#src.scanner.models.packaging_config">src.scanner.models.packaging_config</a>
+ &#8226;   <a href="#src.scanner.models.scan_stats">src.scanner.models.scan_stats</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.detector">src.scanner.detector</a>
+ &#8226;   <a href="#src.scanner.models.barcode_detection">src.scanner.models.barcode_detection</a>
+ &#8226;   <a href="#src.scanner.models.camera_config">src.scanner.models.camera_config</a>
+ &#8226;   <a href="#src.scanner.models.cell_position">src.scanner.models.cell_position</a>
+ &#8226;   <a href="#src.scanner.models.cell_shape">src.scanner.models.cell_shape</a>
+ &#8226;   <a href="#src.scanner.models.layer_calibration">src.scanner.models.layer_calibration</a>
+ &#8226;   <a href="#src.scanner.models.packaging_config">src.scanner.models.packaging_config</a>
+ &#8226;   <a href="#src.scanner.models.scan_stats">src.scanner.models.scan_stats</a>
+ &#8226;   <a href="#src.services.scan_service">src.services.scan_service</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.barcode_detection"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/barcode_detection.py" type="text/plain"><tt>src.scanner.models.barcode_detection</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.camera_config"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/camera_config.py" type="text/plain"><tt>src.scanner.models.camera_config</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.cell_position"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/cell_position.py" type="text/plain"><tt>src.scanner.models.cell_position</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#'scanner.models'">'scanner.models'</a>
+ &#8226;   <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+ &#8226;   <a href="#src.scanner.models.layer_calibration">src.scanner.models.layer_calibration</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.cell_shape"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/cell_shape.py" type="text/plain"><tt>src.scanner.models.cell_shape</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#enum">enum</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+ &#8226;   <a href="#src.scanner.models.packaging_config">src.scanner.models.packaging_config</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.layer_calibration"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/layer_calibration.py" type="text/plain"><tt>src.scanner.models.layer_calibration</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+ &#8226;   <a href="#src.scanner.models.cell_position">src.scanner.models.cell_position</a>
+ &#8226;   <a href="#src.ui.config_panel">src.ui.config_panel</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.packaging_config"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/packaging_config.py" type="text/plain"><tt>src.scanner.models.packaging_config</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+ &#8226;   <a href="#src.scanner.models.cell_shape">src.scanner.models.cell_shape</a>
+ &#8226;   <a href="#typing">typing</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="src.scanner.models.scan_stats"></a>
+  <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/scanner/models/scan_stats.py" type="text/plain"><tt>src.scanner.models.scan_stats</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#src.scanner.models">src.scanner.models</a>
 
   </div>
 
@@ -18077,6 +18271,7 @@ imports:
  &#8226;   <a href="#src.messaging.broker">src.messaging.broker</a>
  &#8226;   <a href="#src.messaging.events">src.messaging.events</a>
  &#8226;   <a href="#src.scanner.detector">src.scanner.detector</a>
+ &#8226;   <a href="#src.scanner.models">src.scanner.models</a>
  &#8226;   <a href="#src.services">src.services</a>
  &#8226;   <a href="#src.services.deduplication">src.services.deduplication</a>
  &#8226;   <a href="#src.ui.overlay">src.ui.overlay</a>
@@ -18096,7 +18291,6 @@ imported by:
 <span class="moduletype">Package</span>  <div class="import">
 imports:
     <a href="#src">src</a>
- &#8226;   <a href="#src.ui.config_panel">src.ui.config_panel</a>
  &#8226;   <a href="#src.ui.overlay">src.ui.overlay</a>
  &#8226;   <a href="#src.ui.stats_panel">src.ui.stats_panel</a>
 
@@ -18116,14 +18310,16 @@ imported by:
   <a target="code" href="///C:/DEVelop/QR_packaging_scanner/src/ui/config_panel.py" type="text/plain"><tt>src.ui.config_panel</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#dataclasses">dataclasses</a>
+    <a href="#'scanner.models'">'scanner.models'</a>
+ &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#src.ui">src.ui</a>
+ &#8226;   <a href="#typing">typing</a>
 
   </div>
   <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
- &#8226;   <a href="#src.ui">src.ui</a>
+ &#8226;   <a href="#src.scanner.models.layer_calibration">src.scanner.models.layer_calibration</a>
 
   </div>
 
@@ -19151,6 +19347,8 @@ imported by:
  &#8226;   <a href="#pika.validators">pika.validators</a>
  &#8226;   <a href="#src.messaging.broker">src.messaging.broker</a>
  &#8226;   <a href="#src.messaging.events">src.messaging.events</a>
+ &#8226;   <a href="#src.scanner.models.packaging_config">src.scanner.models.packaging_config</a>
+ &#8226;   <a href="#src.ui.config_panel">src.ui.config_panel</a>
 
   </div>
 
@@ -20580,6 +20778,18 @@ imported by:
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipimport">zipimport</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="zxingcpp"></a>
+  <a target="code" href="" type="text/plain"><tt>zxingcpp</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
+ &#8226;   <a href="#src.scanner.detector">src.scanner.detector</a>
 
   </div>
 

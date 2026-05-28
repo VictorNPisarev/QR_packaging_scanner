@@ -1,52 +1,43 @@
 """Модуль захвата видео с камеры"""
 
 import logging
-from dataclasses import dataclass
 
 import cv2
 import numpy as np
+import numpy.typing as npt
+
+from scanner.models.camera_config import CameraConfig
 
 logger = logging.getLogger(__name__)
 
-
-@dataclass
-class CameraConfig:
-    """Конфигурация камеры"""
-
-    device_id: int = 0
-    width: int = 1280
-    height: int = 720
-    fps: int = 30
-    auto_exposure: bool = True
-    exposure_value: int = -6  # Для USB камер часто лучше уменьшить
+Frame = npt.NDArray[np.uint8]
 
 
 class CameraCapture:
     """Управление захватом видео с камеры"""
 
-    def __init__(self, config: CameraConfig):
-        self.config = config
+    def __init__(self, config: CameraConfig) -> None:
+        self.config: CameraConfig = config
         self.cap: cv2.VideoCapture | None = None
-        self.is_running = False
+        self.is_running: bool = False
 
     def start(self) -> bool:
         """Запуск захвата видео"""
         try:
+            # Передаём device_id как int — это допустимо
             self.cap = cv2.VideoCapture(self.config.device_id)
+
+            if not self.cap.isOpened():
+                logger.error(f"Не удалось открыть камеру {self.config.device_id}")
+                return False
 
             # Настройка параметров
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.config.width)
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.config.height)
             self.cap.set(cv2.CAP_PROP_FPS, self.config.fps)
 
-            # Проверка, что камера открылась
-            if not self.cap.isOpened():
-                logger.error(f"Не удалось открыть камеру {self.config.device_id}")
-                return False
-
-            # Настройка автоэкспозиции
             if not self.config.auto_exposure:
-                self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+                self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.0)
                 self.cap.set(cv2.CAP_PROP_EXPOSURE, self.config.exposure_value)
 
             self.is_running = True
@@ -60,21 +51,27 @@ class CameraCapture:
             logger.exception(f"Ошибка запуска камеры: {e}")
             return False
 
-    def get_frame(self) -> tuple[bool, np.ndarray | None]:
+    def get_frame(self) -> tuple[bool, Frame | None]:
         """Получение кадра с камеры"""
         if not self.is_running or self.cap is None:
             return False, None
 
-        ret, frame = self.cap.read()
-        if not ret:
+        ret: bool
+        raw_frame: np.ndarray | None
+        ret, raw_frame = self.cap.read()
+
+        if not ret or raw_frame is None:
             logger.warning("Не удалось получить кадр")
             return False, None
+
+        # Явно приводим к нужному типу
+        frame: Frame = np.asarray(raw_frame, dtype=np.uint8)
 
         return True, frame
 
     def stop(self) -> None:
         """Остановка захвата"""
         self.is_running = False
-        if self.cap:
+        if self.cap is not None:
             self.cap.release()
             logger.info("Камера остановлена")

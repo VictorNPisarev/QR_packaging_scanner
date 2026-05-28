@@ -9,7 +9,8 @@ import numpy as np
 from src.camera.capture import CameraCapture, CameraConfig
 from src.messaging.broker import MessageBroker
 from src.messaging.events import BarcodeScannedEvent
-from src.scanner.detector import BarcodeDetection, BarcodeDetector
+from src.scanner.detector import BarcodeDetector
+from src.scanner.models import BarcodeDetection
 from src.services.deduplication import BarcodeDeduplicator, DeduplicationConfig
 from src.ui.overlay import OverlayRenderer
 

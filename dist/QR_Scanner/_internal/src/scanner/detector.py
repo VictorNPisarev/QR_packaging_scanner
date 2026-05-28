@@ -1,30 +1,36 @@
-"""Детектор QR-кодов через OpenCV"""
+"""Детектор кодов через zxing-cpp"""
 
 import logging
-from dataclasses import dataclass
 
 import cv2
 import numpy as np
+import numpy.typing as npt
+
+from scanner.models.cell_shape import CellShape
+from src.scanner.models import BarcodeDetection, CellPosition
 
 logger = logging.getLogger(__name__)
 
+try:
+    import zxingcpp  # type: ignore
 
-@dataclass
-class BarcodeDetection:
-    """Результат детекции QR-кода"""
-
-    data: str
-    barcode_type: str = "QR"
-    position: tuple[int, int, int, int] = (0, 0, 0, 0)  # x, y, width, height
-    confidence: float = 1.0
+    ZXING_AVAILABLE = True
+    logger.info("✓ zxing-cpp готов")
+except ImportError:
+    ZXING_AVAILABLE = False
+    logger.error("zxing-cpp не установлен! Выполните: pip install zxing-cpp")
 
 
 class BarcodeDetector:
-    """Детектор QR-кодов на изображении"""
+    """Детектор Data Matrix и других кодов через zxing-cpp"""
 
-    def __init__(self, scan_region: tuple[int, int, int, int] | None = None) -> None:
-        self.scan_region: tuple[int, int, int, int] | None = scan_region
-        self.qr_detector: cv2.QRCodeDetector = cv2.QRCodeDetector()
+    def __init__(
+        self,
+        scan_region: tuple[int, int, int, int] | None = None,
+    ) -> None:
+        if not ZXING_AVAILABLE:
+            raise RuntimeError("zxing-cpp не установлен. pip install zxing-cpp")
+        self.scan_region = scan_region
 
     def set_scan_region(self, region: tuple[int, int, int, int] | None) -> None:
         """Установка области сканирования"""
@@ -35,93 +41,107 @@ class BarcodeDetector:
         else:
             logger.info("Сканирование по всему кадру")
 
-    def detect(self, frame: np.ndarray) -> list[BarcodeDetection]:
-        """Поиск QR-кодов на кадре"""
+    def detect(self, frame: npt.NDArray[np.uint8]) -> list[BarcodeDetection]:
         results: list[BarcodeDetection] = []
 
         try:
-            # Вырезаем область интереса если задана
-            if self.scan_region is not None:
-                x, y, w, h = self.scan_region
-                roi: np.ndarray = frame[y : y + h, x : x + w]
-                data, points, straight_qrcode = self.qr_detector.detectAndDecode(roi)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if len(frame.shape) == 3 else frame
 
-                if data:
-                    # Вычисляем позицию относительно ROI
-                    if points is not None:
-                        # points - это 4 угла QR-кода
-                        px, py = int(points[0][0][0]), int(points[0][0][1])
-                        pw = int(max(p[0][0] for p in points) - min(p[0][0] for p in points))
-                        ph = int(max(p[0][1] for p in points) - min(p[0][1] for p in points))
-                        position = (x + px, y + py, pw, ph)
-                    else:
-                        position = (x, y, w, h)
+            # Пробуем разные варианты яркости
+            for alpha, beta in [(1.0, 0), (1.3, -20), (0.8, 30)]:
+                adjusted = cv2.convertScaleAbs(gray, alpha=alpha, beta=beta)
 
-                    detection = BarcodeDetection(data=data, position=position, confidence=1.0)
-                    results.append(detection)
-            else:
-                data, points, _ = self.qr_detector.detectAndDecode(frame)
+                if self.scan_region:
+                    x, y, w, h = self.scan_region
+                    roi = adjusted[y : y + h, x : x + w]
+                else:
+                    roi = adjusted
+                    x, y = 0, 0
 
-                if data:
-                    if points is not None:
-                        px = int(points[0][0][0])
-                        py = int(points[0][0][1])
-                        pw = int(max(p[0][0] for p in points) - min(p[0][0] for p in points))
-                        ph = int(max(p[0][1] for p in points) - min(p[0][1] for p in points))
-                        position = (px, py, pw, ph)
-                    else:
-                        h, w = frame.shape[:2]
-                        position = (0, 0, w, h)
+                barcodes = zxingcpp.read_barcodes(roi)
 
-                    detection = BarcodeDetection(data=data, position=position, confidence=1.0)
-                    results.append(detection)
+                for barcode in barcodes:
+                    if barcode.valid and barcode.text:  # noqa: SIM102
+                        # Проверяем, не нашли ли уже этот код
+                        if barcode.text not in [r.data for r in results]:
+                            results.append(
+                                BarcodeDetection(
+                                    data=barcode.text,
+                                    barcode_type=str(barcode.format).split(".")[-1],
+                                    position=(
+                                        x + barcode.position.left,
+                                        y + barcode.position.top,
+                                        barcode.position.width,
+                                        barcode.position.height,
+                                    ),
+                                )
+                            )
+
+                if results:
+                    break  # Нашли — хватит
 
         except Exception as e:
-            logger.error(f"Ошибка детекции QR-кода: {e}")
+            logger.error(f"Ошибка детекции: {e}")
 
         return results
 
-    def detect_multiple(self, frame: np.ndarray) -> list[BarcodeDetection]:
-        """Поиск нескольких QR-кодов на кадре (более медленный, но точный)"""
-        results: list[BarcodeDetection] = []
+    def detect_in_cells(
+        self,
+        frame: npt.NDArray[np.uint8],
+        cells: list[CellPosition],
+    ) -> dict[int, BarcodeDetection | None]:
+        """
+        Детекция кодов в конкретных ячейках.
 
-        try:
-            # Используем детектор для множественных QR-кодов
-            multi_detector = cv2.QRCodeDetector()
+        Returns:
+            Словарь {cell_id: detection или None}
+        """
+        results: dict[int, BarcodeDetection | None] = {}
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if len(frame.shape) == 3 else frame
 
-            if self.scan_region is not None:
-                x, y, w, h = self.scan_region
-                roi = frame[y : y + h, x : x + w]
-                retval, decoded_info, points, straight_qrcode = multi_detector.detectAndDecodeMulti(
-                    roi
+        for cell in cells:
+            # Вырезаем ROI ячейки
+            roi = gray[
+                max(0, cell.y) : min(gray.shape[0], cell.y + cell.height),
+                max(0, cell.x) : min(gray.shape[1], cell.x + cell.width),
+            ]
+
+            if roi.size == 0:
+                results[cell.id] = None
+                continue
+
+            # Для круглых — дополнительная маска
+            if cell.shape == CellShape.CIRCLE:
+                mask = np.zeros(roi.shape, dtype=np.uint8)
+                cv2.circle(
+                    mask,
+                    (roi.shape[1] // 2, roi.shape[0] // 2),
+                    min(roi.shape) // 2,
+                    255,
+                    -1,
                 )
+                roi = cv2.bitwise_and(roi, roi, mask=mask)
 
-                if retval:
-                    for i, data in enumerate(decoded_info):
-                        if data:
-                            if points is not None and i < len(points):
-                                px = int(points[i][0][0][0])
-                                py = int(points[i][0][0][1])
-                                position = (x + px, y + py, 100, 100)  # Приблизительно
-                            else:
-                                position = (x, y, w, h)
-
-                            results.append(BarcodeDetection(data=data, position=position))
-            else:
-                retval, decoded_info, points, _ = multi_detector.detectAndDecodeMulti(frame)
-
-                if retval:
-                    for i, data in enumerate(decoded_info):
-                        if data:
-                            position = (0, 0, 0, 0)
-                            if points is not None and i < len(points):
-                                px = int(points[i][0][0][0])
-                                py = int(points[i][0][0][1])
-                                position = (px, py, 100, 100)
-
-                            results.append(BarcodeDetection(data=data, position=position))
-
-        except Exception as e:
-            logger.error(f"Ошибка множественной детекции QR-кодов: {e}")
+            # Детекция
+            try:
+                barcodes = zxingcpp.read_barcodes(roi)
+                found = None
+                for barcode in barcodes:
+                    if barcode.valid and barcode.text:
+                        found = BarcodeDetection(
+                            data=barcode.text,
+                            barcode_type=str(barcode.format).split(".")[-1],
+                            position=(
+                                cell.x + barcode.position.left,
+                                cell.y + barcode.position.top,
+                                barcode.position.width,
+                                barcode.position.height,
+                            ),
+                        )
+                        break
+                results[cell.id] = found
+            except Exception as e:
+                logger.error(f"Ошибка в ячейке {cell.id}: {e}")
+                results[cell.id] = None
 
         return results
